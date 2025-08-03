@@ -54,8 +54,9 @@ function PlantIdentifier() {
 
       // 查询 Wikipedia 百科内容（优先中文，无则英文）
       let wikiSummary = '暂无百科简介';
+      let wikiLink = '';
       if (plantName) {
-        // 先查中文
+        wikiLink = `https://en.wikipedia.org/wiki/${encodeURIComponent(plantName)}`;
         try {
           const zhWiki = await axios.get(
             `https://zh.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`
@@ -63,7 +64,6 @@ function PlantIdentifier() {
           if (zhWiki.data?.extract) {
             wikiSummary = zhWiki.data.extract;
           } else {
-            // 查英文
             const enWiki = await axios.get(
               `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`
             );
@@ -72,7 +72,6 @@ function PlantIdentifier() {
             }
           }
         } catch (e) {
-          // fallback: 查英文
           try {
             const enWiki = await axios.get(
               `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`
@@ -90,7 +89,8 @@ function PlantIdentifier() {
       let intro = '';
       if (enName) intro += `英文名：${enName}\n`;
       if (zhName) intro += `中文名：${zhName}\n`;
-      intro += `百科：${wikiSummary}`;
+      intro += `百科：${wikiSummary}\n`;
+      if (wikiLink) intro += `更多信息：<a href="${wikiLink}" target="_blank">${wikiLink}</a>`;
 
       setResult({
         name: plantName || '未识别到植物',
@@ -147,7 +147,7 @@ function PlantIdentifier() {
               ) : (
                 <div>
                   <p>🌱 物种名称：{result.name}</p>
-                  <p>📖 简介：<br />{result.description.split('\n').map((line, i) => <span key={i}>{line}<br/></span>)}</p>
+                  <p>📖 简介：<br />{result.description.split('\n').map((line, i) => <span key={i} dangerouslySetInnerHTML={{ __html: line }} />)}</p>
                 </div>
               )}
             </div>
