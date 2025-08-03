@@ -27,7 +27,7 @@ function PlantIdentifier() {
     try {
       const base64Image = await toBase64(file);
       const response = await axios.post(
-        'https://plant.id/api/v3/identify',
+        'https://api.plant.id/v3/identify', // 修正为正确的 API 域名
         {
           images: [base64Image],
           organs: ['leaf'],
@@ -39,6 +39,7 @@ function PlantIdentifier() {
           },
         }
       );
+      console.log('API response:', response.data); // 打印API返回内容
       const suggestion = response.data?.suggestions?.[0];
       setResult({
         name: suggestion?.plant_name || '未识别到植物',
@@ -47,7 +48,7 @@ function PlantIdentifier() {
     } catch (error) {
       setResult({ error: '识别失败，请重试。' });
       message.error('API 请求失败，请检查网络或API Key');
-      console.error(error);
+      console.error('API error:', error?.response?.data || error);
     } finally {
       setImageUrl(URL.createObjectURL(file));
       setLoading(false);
