@@ -19,12 +19,12 @@ function PlantIdentifier() {
 
     try {
       const response = await axios.post(
-        'https://web.plant.id/api/v3/identify',
+        'https://plant.id/api/v3/identify',
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Api-Key': import.meta.env.NEXT_PUBLIC_PLANT_ID_KEY,
+            'Api-Key': 'XCYFzewGYhsOqYewjCPSoKZIWAmrQZoCvc6ul7zlmhf9wgqvnC', // 这里替换为你的实际 API Key
           },
         }
       );
