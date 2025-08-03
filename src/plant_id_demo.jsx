@@ -27,10 +27,18 @@ function PlantIdentifier() {
     try {
       const base64Image = await toBase64(file);
       const response = await axios.post(
-        'https://api.plant.id/v3/identify', // 修正为正确的 API 域名
+        'https://api.plant.id/v2/identify',
         {
           images: [base64Image],
           organs: ['leaf'],
+          details: [
+            "common_names",
+            "url",
+            "name_authority",
+            "wiki_description",
+            "taxonomy",
+            "synonyms"
+          ]
         },
         {
           headers: {
