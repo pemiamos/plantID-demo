@@ -49,9 +49,15 @@ function PlantIdentifier() {
       );
       console.log('API response:', response.data); // 打印API返回内容
       const suggestion = response.data?.suggestions?.[0];
+      // 优先取中文简介
+      const wikiDesc = suggestion?.plant_details?.wiki_description;
+      const description =
+        wikiDesc?.zh?.value ||
+        wikiDesc?.value ||
+        '暂无简介';
       setResult({
         name: suggestion?.plant_name || '未识别到植物',
-        description: suggestion?.plant_details?.wiki_description?.value || '暂无简介',
+        description,
       });
     } catch (error) {
       setResult({ error: '识别失败，请重试。' });
