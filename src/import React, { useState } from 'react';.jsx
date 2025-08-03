@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Upload, Image, Spin, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -55,7 +54,6 @@ function PlantIdentifier() {
       // 查询 Wikipedia 百科内容（优先中文，无则英文）
       let wikiSummary = '暂无百科简介';
       if (plantName) {
-        // 先查中文
         try {
           const zhWiki = await axios.get(
             `https://zh.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`
@@ -63,7 +61,6 @@ function PlantIdentifier() {
           if (zhWiki.data?.extract) {
             wikiSummary = zhWiki.data.extract;
           } else {
-            // 查英文
             const enWiki = await axios.get(
               `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`
             );
@@ -72,7 +69,6 @@ function PlantIdentifier() {
             }
           }
         } catch (e) {
-          // fallback: 查英文
           try {
             const enWiki = await axios.get(
               `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`

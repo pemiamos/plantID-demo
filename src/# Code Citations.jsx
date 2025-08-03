@@ -1,17 +1,46 @@
-import React, { useState } from 'react';
-import { createRoot } from 'react-dom/client';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Upload, Image, Spin, message } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
-import axios from 'axios';
+# Code Citations
 
-function PlantIdentifier() {
-  const [imageUrl, setImageUrl] = useState(null);
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+## License: unknown
+https://github.com/vielhuber/hlp/tree/72775f7c094b95e6d249434230b4a72fe586f425/_js/_build/script.js
 
+```
+) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error)
+```
+
+
+## License: unknown
+https://github.com/MatheusAlvesA/funcionarios_paytour_frontend/tree/c0b06121b329a9f1acc2bda8e9b4946cc33ad017/src/CadastrarFuncionario/index.jsx
+
+```
+= file =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+```
+
+
+## License: unknown
+https://github.com/midhunxavier/convertany/tree/992f6e9aba613a63d9025901915882baed1ad462/web/js/script.js
+
+```
+file =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader
+```
+
+# plant_id_demo.jsx
+
+以下是调用 Wikipedia API 的完整实现，直接修改项目代码以支持通过拉丁学名查询 Wikipedia 的内容。
+
+```jsx
   const handleUpload = async ({ file }) => {
     setLoading(true);
 
@@ -55,7 +84,6 @@ function PlantIdentifier() {
       // 查询 Wikipedia 百科内容（优先中文，无则英文）
       let wikiSummary = '暂无百科简介';
       if (plantName) {
-        // 先查中文
         try {
           const zhWiki = await axios.get(
             `https://zh.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`
@@ -63,7 +91,6 @@ function PlantIdentifier() {
           if (zhWiki.data?.extract) {
             wikiSummary = zhWiki.data.extract;
           } else {
-            // 查英文
             const enWiki = await axios.get(
               `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`
             );
@@ -72,7 +99,6 @@ function PlantIdentifier() {
             }
           }
         } catch (e) {
-          // fallback: 查英文
           try {
             const enWiki = await axios.get(
               `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(plantName)}`
@@ -105,64 +131,8 @@ function PlantIdentifier() {
       setLoading(false);
     }
   };
+```
 
-  const handleReset = () => {
-    setImageUrl(null);
-    setResult(null);
-    setLoading(false);
-  };
-
-  return (
-    <div className="p-6 grid gap-4 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold text-center">🌿 植物识别 Demo</h1>
-      <Card>
-        <CardContent className="grid gap-4">
-          <Upload.Dragger
-            name="file"
-            multiple={false}
-            customRequest={handleUpload}
-            accept="image/*"
-            showUploadList={false}
-          >
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="text-base">点击或拖拽图片进行植物识别</p>
-          </Upload.Dragger>
-
-          {loading && <Spin size="large" />}
-
-          {imageUrl && (
-            <div className="grid gap-2">
-              <h2 className="text-lg font-semibold">上传的图片：</h2>
-              <Image width={200} src={imageUrl} alt="uploaded plant" />
-            </div>
-          )}
-
-          {result && (
-            <div className="grid gap-2">
-              <h2 className="text-lg font-semibold">识别结果：</h2>
-              {result.error ? (
-                <p className="text-red-500">{result.error}</p>
-              ) : (
-                <div>
-                  <p>🌱 物种名称：{result.name}</p>
+```jsx
                   <p>📖 简介：<br />{result.description.split('\n').map((line, i) => <span key={i}>{line}<br/></span>)}</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {(imageUrl || result) && (
-            <Button variant="outline" onClick={handleReset}>
-              重置
-            </Button>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-const root = createRoot(document.getElementById("root"));
-root.render(<PlantIdentifier />);
+```
