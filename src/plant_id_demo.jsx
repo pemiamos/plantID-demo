@@ -18,15 +18,17 @@ function PlantIdentifier() {
     formData.append('image', file);
 
     try {
-      // mock 返回
-      await new Promise(r => setTimeout(r, 1000));
-      setResult({
-        name: "测试植物",
-        description: "这是一个测试描述。",
-      });
-      // 实际使用时请恢复为你的后端接口
-      // const response = await axios.post('你的后端接口地址', formData);
-      // setResult(response.data);
+      const response = await axios.post(
+        'https://web.plant.id/api/v3/identify',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Api-Key': import.meta.env.NEXT_PUBLIC_PLANT_ID_KEY,
+          },
+        }
+      );
+      setResult(response.data);
     } catch (error) {
       setResult({ error: '识别失败，请重试。' });
     } finally {
