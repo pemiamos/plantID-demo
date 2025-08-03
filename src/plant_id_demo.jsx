@@ -77,8 +77,17 @@ function PlantIdentifier() {
                 <p className="text-red-500">{result.error}</p>
               ) : (
                 <div>
-                  <p>🌱 物种名称：{result.name}</p>
-                  <p>📖 简介：{result.description}</p>
+                  <p>
+                    🌱 物种名称：
+                    {result.suggestions?.[0]?.plant_name ||
+                      result.suggestions?.[0]?.species?.scientificName ||
+                      '未识别'}
+                  </p>
+                  <p>
+                    📖 简介：
+                    {result.suggestions?.[0]?.plant_details?.wiki_description?.value ||
+                      '暂无简介'}
+                  </p>
                 </div>
               )}
             </div>
