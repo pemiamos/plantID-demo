@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +7,7 @@ import { Upload, Image, Spin } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
-export default function PlantIdentifier() {
+function PlantIdentifier() {
   const [imageUrl, setImageUrl] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,8 +18,15 @@ export default function PlantIdentifier() {
     formData.append('image', file);
 
     try {
-      const response = await axios.post('https://my-api.example.com/identify', formData);
-      setResult(response.data);
+      // mock 返回
+      await new Promise(r => setTimeout(r, 1000));
+      setResult({
+        name: "测试植物",
+        description: "这是一个测试描述。",
+      });
+      // 实际使用时请恢复为你的后端接口
+      // const response = await axios.post('你的后端接口地址', formData);
+      // setResult(response.data);
     } catch (error) {
       setResult({ error: '识别失败，请重试。' });
     } finally {
@@ -84,3 +92,6 @@ export default function PlantIdentifier() {
     </div>
   );
 }
+
+const root = createRoot(document.getElementById("root"));
+root.render(<PlantIdentifier />);
