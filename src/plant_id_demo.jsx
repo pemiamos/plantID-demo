@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Upload, Image, Spin } from 'antd';
+import { Upload, Image, Spin, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -14,16 +14,27 @@ function PlantIdentifier() {
 
   const handleUpload = async ({ file }) => {
     setLoading(true);
-    const formData = new FormData();
-    formData.append('image', file);
+
+    // 将图片文件转为 base64
+    const toBase64 = file =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+      });
 
     try {
+      const base64Image = await toBase64(file);
       const response = await axios.post(
         'https://plant.id/api/v3/identify',
-        formData,
+        {
+          images: [base64Image],
+          organs: ['leaf'],
+        },
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
             'Api-Key': 'XCYFzewGYhsOqYewjCPSoKZIWAmrQZoCvc6ul7zlmhf9wgqvnC',
           },
         }
@@ -35,7 +46,7 @@ function PlantIdentifier() {
       });
     } catch (error) {
       setResult({ error: '识别失败，请重试。' });
-      // 可选：输出错误详情
+      message.error('API 请求失败，请检查网络或API Key');
       console.error(error);
     } finally {
       setImageUrl(URL.createObjectURL(file));
