@@ -24,13 +24,19 @@ function PlantIdentifier() {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Api-Key': 'XCYFzewGYhsOqYewjCPSoKZIWAmrQZoCvc6ul7zlmhf9wgqvnC', // 这里替换为你的实际 API Key
+            'Api-Key': 'XCYFzewGYhsOqYewjCPSoKZIWAmrQZoCvc6ul7zlmhf9wgqvnC',
           },
         }
       );
-      setResult(response.data);
+      const suggestion = response.data?.suggestions?.[0];
+      setResult({
+        name: suggestion?.plant_name || '未识别到植物',
+        description: suggestion?.plant_details?.wiki_description?.value || '暂无简介',
+      });
     } catch (error) {
       setResult({ error: '识别失败，请重试。' });
+      // 可选：输出错误详情
+      console.error(error);
     } finally {
       setImageUrl(URL.createObjectURL(file));
       setLoading(false);
@@ -77,17 +83,8 @@ function PlantIdentifier() {
                 <p className="text-red-500">{result.error}</p>
               ) : (
                 <div>
-                  <p>
-                    🌱 物种名称：
-                    {result.suggestions?.[0]?.plant_name ||
-                      result.suggestions?.[0]?.species?.scientificName ||
-                      '未识别'}
-                  </p>
-                  <p>
-                    📖 简介：
-                    {result.suggestions?.[0]?.plant_details?.wiki_description?.value ||
-                      '暂无简介'}
-                  </p>
+                  <p>🌱 物种名称：{result.name}</p>
+                  <p>📖 简介：{result.description}</p>
                 </div>
               )}
             </div>
