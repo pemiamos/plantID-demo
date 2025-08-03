@@ -55,6 +55,8 @@ function PlantIdentifier() {
       // 查询 Wikipedia 百科内容（优先中文，无则英文）
       let wikiSummary = '暂无百科简介';
       let wikiLink = '';
+      let translatedSummary = ''; // 翻译后的中文简介
+
       if (plantName) {
         wikiLink = `https://en.wikipedia.org/wiki/${encodeURIComponent(plantName)}`;
         try {
@@ -69,6 +71,26 @@ function PlantIdentifier() {
             );
             if (enWiki.data?.extract) {
               wikiSummary = enWiki.data.extract;
+
+              // 调用 Google Translate API 将英文简介翻译为中文
+              try {
+                const translationResponse = await axios.post(
+                  'https://translate.googleapis.com/translate_a/single',
+                  null,
+                  {
+                    params: {
+                      client: 'gtx',
+                      sl: 'en',
+                      tl: 'zh-CN',
+                      dt: 't',
+                      q: enWiki.data.extract,
+                    },
+                  }
+                );
+                translatedSummary = translationResponse.data?.[0]?.[0]?.[0] || '';
+              } catch (translationError) {
+                console.error('翻译失败:', translationError);
+              }
             }
           }
         } catch (e) {
@@ -78,6 +100,26 @@ function PlantIdentifier() {
             );
             if (enWiki.data?.extract) {
               wikiSummary = enWiki.data.extract;
+
+              // 调用 Google Translate API 将英文简介翻译为中文
+              try {
+                const translationResponse = await axios.post(
+                  'https://translate.googleapis.com/translate_a/single',
+                  null,
+                  {
+                    params: {
+                      client: 'gtx',
+                      sl: 'en',
+                      tl: 'zh-CN',
+                      dt: 't',
+                      q: enWiki.data.extract,
+                    },
+                  }
+                );
+                translatedSummary = translationResponse.data?.[0]?.[0]?.[0] || '';
+              } catch (translationError) {
+                console.error('翻译失败:', translationError);
+              }
             }
           } catch (e2) {
             // 保持暂无百科简介
@@ -90,6 +132,7 @@ function PlantIdentifier() {
       if (enName) intro += `英文名：${enName}\n`;
       if (zhName) intro += `中文名：${zhName}\n`;
       intro += `百科：${wikiSummary}\n`;
+      if (translatedSummary) intro += `翻译：${translatedSummary}\n`;
       if (wikiLink) intro += `更多信息：<a href="${wikiLink}" target="_blank">${wikiLink}</a>`;
 
       setResult({
